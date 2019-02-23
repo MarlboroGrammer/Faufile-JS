@@ -24,16 +24,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true, limit:'10gb' }));
 // app.use(history())
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use(BASE_URL + '/', index);
 app.use(BASE_URL + '/users', users);
-
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'), (err) => {
-    if (err) res.status(500).send(err)
-  })
-})
 
 //Manually enable cors
 app.use(function(req, res, next) {
