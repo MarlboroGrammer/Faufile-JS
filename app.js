@@ -10,6 +10,9 @@ var db = require('./helper/db.js')
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var services = require('./routes/services');
+var tickets = require('./routes/tickets');
+var regions = require('./routes/regions');
 var app = express();
 
 // view engine setup
@@ -28,6 +31,9 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use(BASE_URL + '/', index);
 app.use(BASE_URL + '/users', users);
+app.use(BASE_URL + '/services', services);
+app.use(BASE_URL + '/regions', regions);
+app.use(BASE_URL + '/tickets', tickets);
 
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'index.html'), (err) => {
@@ -47,6 +53,7 @@ app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
+    
 });
 
 // error handler
