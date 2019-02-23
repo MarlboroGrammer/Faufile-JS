@@ -1,0 +1,22 @@
+{
+  "name": "taktak",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "async": "^2.6.2",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "html": "^1.0.0",
+    "jsonwebtoken": "^8.5.0",
+    "morgan": "~1.9.0",
+    "mysql": "^2.16.0",
+    "serve-favicon": "~2.4.5"
+  }
+}
