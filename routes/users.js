@@ -28,6 +28,7 @@ router.post('/' ,function(req, res, next) {
     res.json('success')
 });
 router.post('/auth', function (req, res) {
+  console.log(req.body);
   db.get().query('SELECT * FROM users WHERE email = ?', [req.body.email], function (err, rows) {
     if (err) 
     	return res.status(500).send(err)
