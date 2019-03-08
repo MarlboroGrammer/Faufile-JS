@@ -1,4 +1,4 @@
-var express = require('express');
+ var express = require('express');
 var bcrypt = require('bcrypt-nodejs')
 
 var router = express.Router()
@@ -19,7 +19,11 @@ router.post('/' ,function(req, res) {
     res.send('success')
 })
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  db.get().query('SELECT * FROM service' , function (err, rows) {
+    if (err) 
+    	return res.status(500).send({'error': err})
+    return res.json(rows)
+  })
 });
 
 

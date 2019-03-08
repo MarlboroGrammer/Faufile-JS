@@ -1,4 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app/auth.dart';
+import 'package:flutter_app/data/database_helper.dart';
+import 'package:flutter_app/model/user.dart';
+import 'package:flutter_app/screens/login_screen_presenter.dart';
+
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -8,7 +15,41 @@ class LoginPage extends StatefulWidget {
 
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> implements LoginScreenContract, AuthStateListener {
+  bool _isLoading = false;
+  final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  String _username, _password;
+
+  LoginScreenPresenter _presenter;
+
+  loginScreenState() {
+    var authStateProvider = new AuthStateProvider();
+    authStateProvider.subscribe(this);
+  }
+  void _submit() {
+    _presenter = new LoginScreenPresenter(this);
+    final form = formKey.currentState;
+    if (form.validate()) {
+      setState(() => _isLoading = true);
+      form.save();
+      print(_presenter);
+      _presenter.doLogin(_username, _password);
+    }
+  }
+
+  void _showSnackBar(String text) {
+    scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text(text)));
+  }
+
+  @override
+  onAuthStateChanged(AuthState state) {
+    if(state == AuthState.LOGGED_IN) {
+      print("We're in!");
+      Navigator.of(context).pushNamed(HomePage.tag);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -23,6 +64,12 @@ class _LoginPageState extends State<LoginPage> {
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
+      onSaved: (val) => _username = val,
+      validator: (val) {
+        return val.length < 10
+            ? "Username must have atleast 10 chars"
+            : null;
+      },
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -36,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       obscureText: true,
       autofocus: false,
+      onSaved: (val) => _password = val,
       decoration: InputDecoration(
           hintText: 'Password',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -54,9 +102,7 @@ class _LoginPageState extends State<LoginPage> {
         child: MaterialButton(
           minWidth: 200.0,
           height: 42.0,
-          onPressed: (){
-            Navigator.of(context).pushNamed(HomePage.tag);
-          },
+          onPressed: _submit,
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
         ),
@@ -69,7 +115,27 @@ class _LoginPageState extends State<LoginPage> {
 
       },
     );
+
+    var loginForm = new Column(
+      children: <Widget>[
+        new Form(
+          key: formKey,
+          child: new Column(
+            children: <Widget>[
+              SizedBox(height: 48.0),
+              email,
+              SizedBox(height: 8.0),
+              password,
+              SizedBox(height: 24.0),
+            ],
+          ),
+        ),
+        _isLoading ? new CircularProgressIndicator() : loginButton
+      ],
+      crossAxisAlignment: CrossAxisAlignment.center,
+    );
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
@@ -77,17 +143,30 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
             logo,
-            SizedBox(height: 48.0),
-            email,
-            SizedBox(height: 8.0),
-            password,
-            SizedBox(height: 24.0),
-            loginButton,
+            loginForm,
             forgotLabel
           ],
         )
       )
     );
+  }
+
+
+  @override
+  void onLoginError(String errorTxt) {
+    _showSnackBar("Please check your credentials");
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  void onLoginSuccess(User user) async {
+    _showSnackBar("Welcome!");
+    setState(() => _isLoading = false);
+    var db = new DatabaseHelper();
+    await db.saveUser(user);
+    var authStateProvider = new AuthStateProvider();
+    authStateProvider.notify(AuthState.LOGGED_IN);
+    Navigator.of(context).pushNamed(HomePage.tag);
   }
 
 }

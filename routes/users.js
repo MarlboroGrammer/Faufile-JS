@@ -28,17 +28,17 @@ router.post('/' ,function(req, res, next) {
     res.json('success')
 });
 router.post('/auth', function (req, res) {
-  console.log(req.body);
+  console.log(req.body.email);
   db.get().query('SELECT * FROM users WHERE email = ?', [req.body.email], function (err, rows) {
     if (err) 
-    	return res.status(500).send(err)
+    	return res.status(500).send({error: err})
     if(rows.length === 0) {
-    	return res.status(404).send('nope')
+    	return res.status(404).send({error: 'Please check your credentials.'})
     }
     if (bcrypt.compareSync(req.body.password, rows[0].password)) {
     	return res.json({user: rows[0], token: jwtHelper.jwtSignUser(req.body.email)})
     }	
-    res.status(401).send('nope')
+    res.status(401).send({error: 'Please check your credentials.'})
   }) 
 })
 
