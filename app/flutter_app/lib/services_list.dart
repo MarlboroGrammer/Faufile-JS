@@ -36,7 +36,12 @@ class _ListPageState extends State<ListPage> implements ServicesScreenContract{
                 if (snapshot.data!=null) {
                   return new Column (
                     children: <Widget>[
-                      new RegionsDropDown(),
+                      new Row(children: [
+                        new SizedBox(width: 40.0,),
+                        new Text('Select your area:'),
+                        new SizedBox(width: 20.0,),
+                        new RegionsDropDown()]
+                      ),
                       new Expanded(child: getList(snapshot))]
                   );
                 }
