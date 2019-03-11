@@ -108,6 +108,12 @@ class DetailPage extends StatelessWidget {
           child:
           Text("Get queue ticket", style: TextStyle(color: Colors.white)),
         ));
+    final ticketCount = Container(
+      padding: EdgeInsets.symmetric(vertical: 30.0),
+      child: Center(
+        child: new Text('Current ticket number: 0001', style: new TextStyle(fontSize: 20.0),)
+      ),
+    );
     final bottomContent = Container(
       width: MediaQuery
           .of(context)
@@ -116,7 +122,7 @@ class DetailPage extends StatelessWidget {
       padding: EdgeInsets.all(30.0),
       child: Center(
         child: Column(
-          children: <Widget>[bottomContentText, readButton],
+          children: <Widget>[bottomContentText, ticketCount, readButton],
         ),
       ),
     );
