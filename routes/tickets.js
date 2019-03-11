@@ -8,20 +8,26 @@ var jwtHelper = require('../helper/jwt.js')
 
 router.post('/' ,function(req, res) {
 	const ticket =  {
-		name: req.body.name
+		user_id: req.body.user,
+		service_id: req.body.service
 	}
 	var keys = Object.keys(ticket)
-	var values = keys.map((key) => { return "'" + service[key] + "'" })
-	db.get().query('INSERT INTO tickets (' + keys.join(',') + ') VALUES (' + values.join(',') + ')', (err, rows) => {
+	console.log(ticket)
+	var values = keys.map((key) => { return "'" + ticket[key] + "'" })
+	db.get().query('INSERT INTO ticket (' + keys.join(',') + ') VALUES (' + values.join(',') + ')', (err, rows) => {
     	if (err) 
     	 res.status(500).send(err)
     });
     res.send('success')
 })
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
+router.get('/', function(req, res, next) {
+	db.get().query('SELECT * FROM ticket' , function (err, rows) {
+    	if (err) 
+    		return res.status(500).send({'error': err})
+    	return res.json(rows)
+  	})
+});
 
 
 module.exports = router;

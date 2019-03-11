@@ -1,8 +1,17 @@
-import 'package:flutter_app/model/lesson.dart';
+import 'dart:async';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter_app/model/service.dart';
 import 'package:flutter/material.dart';
 
 class DetailPage extends StatelessWidget {
+
+  Future<String> postTicket() async{
+    http.Response response = await http.post(
+      Uri.encodeFull("http://10.0.2.2:3000/api/tickets"),
+    );
+    print (response.body);
+  }
   final Service service;
   DetailPage({Key key, this.service}) : super(key: key);
 
@@ -103,8 +112,8 @@ class DetailPage extends StatelessWidget {
             .size
             .width,
         child: RaisedButton(
-          onPressed: () => {},
-          color: Color.fromRGBO(58, 66, 86, 1.0),
+          onPressed: postTicket,
+          color: Color.fromRGBO(0, 66, 250, 1.0),
           child:
           Text("Get queue ticket", style: TextStyle(color: Colors.white)),
         ));
