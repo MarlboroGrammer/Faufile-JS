@@ -25,6 +25,17 @@ class RestDatasource {
     });
   }
 
+  Future<String> postTicket (int userId, int serviceId, BigInt bookingTime) {
+    return _netUtil.post(TICKETS_URL, body: {
+      "user_id": userId,
+      "service_id": serviceId
+    }).then((dynamic res) {
+      print(res.toString());
+      if(res["error"] != null) throw new Exception(res);
+      return res[0];
+    });
+  }
+
   Future<List<Service>> getServices() {
     List<Service> services = new List();
     return _netUtil.get(SERVICES_URL).then((dynamic res) {
@@ -50,9 +61,17 @@ class RestDatasource {
     return _netUtil.get(TICKETS_URL).then((dynamic res) {
       if(res == null) throw new Exception(res);
       for (var ticket in res) {
-        tickets.add(ticket.map(ticket));
+        tickets.add(Ticket.map(ticket));
       }
       return (tickets);
+    });
+  }
+
+  Future<dynamic> getLastTicket (int serviceId) {
+    return _netUtil.get(TICKETS_URL + '/last/${serviceId}').then((dynamic res) {
+      if(res == null) throw new Exception(res);
+      print('getLastTicket API res : ${res[0]["ticket"]}');
+      return res[0]["ticket"];
     });
   }
 }

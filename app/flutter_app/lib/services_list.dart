@@ -32,8 +32,10 @@ class _ListPageState extends State<ListPage> implements ServicesScreenContract{
         child: new FutureBuilder(
             future: api.getServices(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print('getList ${snapshot}');
               if (snapshot.hasData) {
                 if (snapshot.data!=null) {
+                  print('getList ${snapshot.data}');
                   return new Column (
                     children: <Widget>[
                       new Row(children: [
@@ -68,28 +70,6 @@ class _ListPageState extends State<ListPage> implements ServicesScreenContract{
     title: Text(
       service.name,
       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-    ),
-    // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
-
-    subtitle: Row(
-      children: <Widget>[
-//          Expanded(
-//              flex: 1,
-//              child: Container(
-//                // tag: 'hero',
-//                child: LinearProgressIndicator(
-//                    backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
-//                    value: lesson.indicatorValue,
-//                    valueColor: AlwaysStoppedAnimation(Colors.green)),
-//              )),
-//          Expanded(
-//            flex: 4,
-//            child: Padding(
-//                padding: EdgeInsets.only(left: 10.0),
-//                child: Text(lesson.level,
-//                    style: TextStyle(color: Colors.white))),
-//          )
-      ],
     ),
     trailing:
     Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),

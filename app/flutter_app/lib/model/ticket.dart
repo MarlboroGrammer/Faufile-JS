@@ -1,7 +1,7 @@
 class Ticket {
   int user;
   int field;
-  Ticket(this.user, this.field);
+  Ticket();
 
   Ticket.map (dynamic obj) {
     this.user = obj["user"];
