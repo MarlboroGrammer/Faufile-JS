@@ -8,11 +8,12 @@ var jwtHelper = require('../helper/jwt.js')
 
 router.post('/' ,function(req, res) {
 	const service =  {
-		name: req.body.name
+		name: req.body.name,
+		Timespan: req.body.Timespan
 	}
 	var keys = Object.keys(service)
 	var values = keys.map((key) => { return "'" + service[key] + "'" })
-	db.get().query('INSERT INTO services (' + keys.join(',') + ') VALUES (' + values.join(',') + ')', (err, rows) => {
+	db.get().query('INSERT INTO field (' + keys.join(',') + ') VALUES (' + values.join(',') + ')', (err, rows) => {
     	if (err) 
     	 res.status(500).send(err)
     });
