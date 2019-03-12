@@ -9,17 +9,57 @@ class DetailPage extends StatefulWidget {
   DetailPage({Key key, this.service}) : super(key: key);
   final Service service;
 
+
   @override
   _DetailPageState createState () => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  TimeOfDay _time = new TimeOfDay.now();
 
   Future<String> postTicket() async{
     http.Response response = await http.post(
       Uri.encodeFull("http://10.0.2.2:3000/api/tickets"),
     );
     print (response.body);
+  }
+  Future<Null> selectTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(context: context, initialTime: _time);
+    if(picked != null && picked != _time){
+      print ('Time selected: ${_time.toString()}');
+
+      setState(() {
+        _time = picked;
+      });
+    }
+}
+  // user defined function
+  void show_Dialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Choose the time for your service"),
+          content: new Text("Take an appointement at ${widget.service.name} at:${_time.toString()}"),
+          actions: <Widget>[
+            new Text('Time selected: ${_time.toString()}\n'),
+            new RaisedButton(
+                child: new Text('Select time'),
+                onPressed: (){selectTime(context);}
+        ),
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
   RestDatasource api;
   @override
@@ -107,7 +147,7 @@ class _DetailPageState extends State<DetailPage> {
             .size
             .width,
         child: RaisedButton(
-          onPressed: postTicket,
+          onPressed: show_Dialog,
           color: Color.fromRGBO(0, 66, 250, 1.0),
           child:
           Text("Get queue ticket", style: TextStyle(color: Colors.white)),
@@ -118,7 +158,7 @@ class _DetailPageState extends State<DetailPage> {
           if (snapshot.hasData) {
             if (snapshot.data!=null) {
               return new Container(
-                padding: EdgeInsets.symmetric(vertical: 30.0),
+                padding: EdgeInsets.symmetric(vertical: 10.0),
                 child: Center(
                     child: new Text('Current ticket number: ${snapshot.data}', style: new TextStyle(fontSize: 20.0),)
                 ),
