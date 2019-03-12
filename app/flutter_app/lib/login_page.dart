@@ -5,6 +5,7 @@ import 'package:flutter_app/auth.dart';
 import 'package:flutter_app/data/database_helper.dart';
 import 'package:flutter_app/model/user.dart';
 import 'package:flutter_app/screens/login_screen_presenter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
 
@@ -19,11 +20,14 @@ class _LoginPageState extends State<LoginPage> implements LoginScreenContract, A
   bool _isLoading = false;
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  SharedPreferences _sharedPreferences;
   String _username, _password;
 
   LoginScreenPresenter _presenter;
 
   loginScreenState() {
+    SharedPreferences.setMockInitialValues({"current": 0});
     var authStateProvider = new AuthStateProvider();
     authStateProvider.subscribe(this);
   }
@@ -165,6 +169,8 @@ class _LoginPageState extends State<LoginPage> implements LoginScreenContract, A
     var db = new DatabaseHelper();
     await db.saveUser(user);
     var authStateProvider = new AuthStateProvider();
+    _sharedPreferences = await _prefs;
+    _sharedPreferences.setInt('current', user.id);
     authStateProvider.notify(AuthState.LOGGED_IN);
     Navigator.of(context).pushNamed(HomePage.tag);
   }

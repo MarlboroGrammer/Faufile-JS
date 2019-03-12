@@ -6,6 +6,7 @@ import 'package:flutter_app/detail_page.dart';
 
 import 'package:flutter_app/screens/services_presenter.dart';
 
+
 class ListPage extends StatefulWidget {
   ListPage({Key key, this.title}) : super(key: key);
 
@@ -32,10 +33,8 @@ class _ListPageState extends State<ListPage> implements ServicesScreenContract{
         child: new FutureBuilder(
             future: api.getServices(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print('getList ${snapshot}');
               if (snapshot.hasData) {
                 if (snapshot.data!=null) {
-                  print('getList ${snapshot.data}');
                   return new Column (
                     children: <Widget>[
                       new Row(children: [

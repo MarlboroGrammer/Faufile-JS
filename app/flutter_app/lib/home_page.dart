@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'services_list.dart';
+import 'tickets_list.dart';
 
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
           body: TabBarView(
             children: [
               new ListPage(title: 'Lessons'),
-              new Container(color: Colors.orange,),
+              new TicketPage(),
             ],
           ),
           bottomNavigationBar: new TabBar(

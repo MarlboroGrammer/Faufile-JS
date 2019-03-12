@@ -25,14 +25,17 @@ class RestDatasource {
     });
   }
 
-  Future<String> postTicket (int userId, int serviceId, BigInt bookingTime) {
+  Future<dynamic> postTicket (int userId, int serviceId) {
+    var now = new DateTime.now();
+    print('inside postTicket ${userId}');
+    String timestamp = '${now.hour}${now.minute}${now.second}';
     return _netUtil.post(TICKETS_URL, body: {
-      "user_id": userId,
-      "service_id": serviceId
-    }).then((dynamic res) {
+      "user_id": '${userId}',
+      "service_id": '${serviceId}'
+      }).then((dynamic res) {
       print(res.toString());
       if(res["error"] != null) throw new Exception(res);
-      return res[0];
+      return res;
     });
   }
 
@@ -56,9 +59,9 @@ class RestDatasource {
       return (regions);
     });
   }
-  Future<List<Ticket>> getTickets() {
+  Future<List<Ticket>> getTickets(userId) {
     List<Ticket> tickets = new List();
-    return _netUtil.get(TICKETS_URL).then((dynamic res) {
+    return _netUtil.get(TICKETS_URL + '/user/${userId}').then((dynamic res) {
       if(res == null) throw new Exception(res);
       for (var ticket in res) {
         tickets.add(Ticket.map(ticket));
@@ -70,8 +73,7 @@ class RestDatasource {
   Future<dynamic> getLastTicket (int serviceId) {
     return _netUtil.get(TICKETS_URL + '/last/${serviceId}').then((dynamic res) {
       if(res == null) throw new Exception(res);
-      print('getLastTicket API res : ${res[0]["ticket"]}');
-      return res[0]["ticket"];
+      return res[0]["ticket"] == null ? 0 : res[0]["ticket"];
     });
   }
 }

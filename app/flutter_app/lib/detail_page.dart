@@ -1,9 +1,10 @@
-import 'dart:async';
 
 import 'package:flutter_app/data/rest_ds.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_app/model/service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utils/auth_util.dart';
+
+import 'home_page.dart';
 
 class DetailPage extends StatefulWidget {
   DetailPage({Key key, this.service}) : super(key: key);
@@ -15,11 +16,10 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
 
-  Future<String> postTicket() async{
-    http.Response response = await http.post(
-      Uri.encodeFull("http://10.0.2.2:3000/api/tickets"),
-    );
-    print (response.body);
+   void postTicket() async{
+    var res = await api.postTicket(AuthUtil.getCurrent(), widget.service.id);
+    if (res != null)
+      Navigator.popUntil(context, ModalRoute.withName(HomePage.tag));
   }
   RestDatasource api;
   @override
@@ -101,7 +101,7 @@ class _DetailPageState extends State<DetailPage> {
       style: TextStyle(fontSize: 18.0),
     );
     final readButton = Container(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
+        padding: EdgeInsets.symmetric(vertical: 11.0),
         width: MediaQuery
             .of(context)
             .size
