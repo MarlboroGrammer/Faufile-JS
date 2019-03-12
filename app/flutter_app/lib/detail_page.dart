@@ -44,18 +44,27 @@ class _DetailPageState extends State<DetailPage> {
           title: new Text("Choose the time for your service"),
           content: new Text("Take an appointement at ${widget.service.name} at:${_time.toString()}"),
           actions: <Widget>[
-            new Text('Time selected: ${_time.toString()}\n'),
-            new RaisedButton(
-                child: new Text('Select time'),
-                onPressed: (){selectTime(context);}
-        ),
+            new Column(
+              children: <Widget>[
+                new Text('Time selected: ${_time}\n'),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new RaisedButton(
+                        child: new Text('Select time', style: TextStyle(color: Colors.white),),
+                        onPressed: (){selectTime(context);}
+                    ),
+                    new FlatButton(
+                      child: new Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ),
+              ],
+            )
             // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
           ],
         );
       },
