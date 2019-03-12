@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_app/utils/network_util.dart';
 import 'package:flutter_app/model/user.dart';
 import 'package:flutter_app/model/service.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_app/model/ticket.dart';
 
 class RestDatasource {
   NetworkUtil _netUtil = new NetworkUtil();
-  static const String BASE_URL = "http://10.0.2.2:3000/api";
+  static const String BASE_URL = "http://faufile.herokuapp.com/api";
   static const String LOGIN_URL = BASE_URL + "/users/auth";
   static const String SERVICES_URL = BASE_URL + "/services";
   static const String REGIONS_URL = BASE_URL + "/regions";
@@ -25,15 +26,13 @@ class RestDatasource {
     });
   }
 
-  Future<dynamic> postTicket (int userId, int serviceId) {
-    var now = new DateTime.now();
+  Future<dynamic> postTicket (int userId, int serviceId, TimeOfDay time) {
     print('inside postTicket ${userId}');
-    String timestamp = '${now.hour}${now.minute}${now.second}';
     return _netUtil.post(TICKETS_URL, body: {
       "user_id": '${userId}',
-      "service_id": '${serviceId}'
+      "service_id": '${serviceId}',
+      "booking_time": '${time.hour}${time.minute}00'
       }).then((dynamic res) {
-      print(res.toString());
       if(res["error"] != null) throw new Exception(res);
       return res;
     });

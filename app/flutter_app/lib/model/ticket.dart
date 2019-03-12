@@ -5,6 +5,7 @@ class Ticket {
   int user;
   int field;
   String serviceName;
+  String bookingTime;
   Ticket();
 
   Ticket.map (dynamic obj) {
@@ -12,6 +13,7 @@ class Ticket {
     this.user = obj["user"];
     this.field = obj["field"];
     this.serviceName = obj["name"];
+    this.bookingTime = obj["booking_time"];
   }
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();

@@ -71,8 +71,9 @@ class _TicketPageState extends State<TicketPage> {
     ),
     subtitle: Row(
       children: <Widget>[
-        Text("${ticket.id}"),
-        Text("Horraire: 17:05:22", style: TextStyle(color: Colors.white))
+        Text("${ticket.id}", style: TextStyle(color: Colors.white)),
+        SizedBox(width: 15.0,),
+        Text("Horraire: ${ticket.bookingTime}", style: TextStyle(color: Colors.white))
       ],
     ),
     trailing:

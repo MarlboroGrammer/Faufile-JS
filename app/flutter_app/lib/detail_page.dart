@@ -17,16 +17,23 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   TimeOfDay _time = new TimeOfDay.now();
-
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
    void postTicket() async{
-    var res = await api.postTicket(AuthUtil.getCurrent(), widget.service.id);
-    if (res != null)
+    try {
+      var res = await api.postTicket(AuthUtil.getCurrent(), widget.service.id, _time);
       Navigator.popUntil(context, ModalRoute.withName(HomePage.tag));
+    }on Exception catch(error) {
+      showErrorDialog();
+    }
+//    if (res != null)
+//      Navigator.popUntil(context, ModalRoute.withName(HomePage.tag));
+  }
+  void _showSnackBar(String text) {
+    scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text(text)));
   }
   Future<Null> selectTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(context: context, initialTime: _time);
     if(picked != null && picked != _time){
-      print ('Time selected: ${_time.toString()}');
 
       setState(() {
         _time = picked;
@@ -54,6 +61,42 @@ class _DetailPageState extends State<DetailPage> {
                         child: new Text('Select time', style: TextStyle(color: Colors.white),),
                         onPressed: (){selectTime(context);}
                     ),
+                    new RaisedButton(
+                        padding: const EdgeInsets.all(20),
+                        child: new Text('Confirm choice', style: TextStyle(color: Colors.white),),
+                        color: Color.fromRGBO(83, 66, 250, 1.0),
+                        onPressed: postTicket
+                    ),
+                    new FlatButton(
+                      child: new Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ),
+              ],
+            )
+            // usually buttons at the bottom of the dialog
+          ],
+        );
+      },
+    );
+  }
+  void showErrorDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text("Please pick another time!"),
+          actions: <Widget>[
+            new Column(
+              children: <Widget>[
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
                     new FlatButton(
                       child: new Text("Close"),
                       onPressed: () {
